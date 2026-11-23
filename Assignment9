@@ -1,0 +1,57 @@
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+    FILE *fp;
+    float dist, f_dist;
+    int x, y, f_x, f_y;
+    char dir[20], f_dir[20];
+    int repeated = 0;
+
+    // 1. Record current navigation data
+    printf("Enter sensor distance: ");
+    scanf("%f", &dist);
+    printf("Enter obstacle coordinates (x y): ");
+    scanf("%d %d", &x, &y);
+    printf("Enter movement direction (Forward/Left/Right/Back): ");
+    scanf("%s", dir);
+
+    // 2. Read past records to check for repeated obstacles
+    fp = fopen("nav_history.txt", "r");
+    if (fp != NULL) {
+        while (fscanf(fp, "%f %d %d %s", &f_dist, &f_x, &f_y, f_dir) != EOF) {
+            if (f_x == x && f_y == y) {
+                repeated = 1;
+                break;
+            }
+        }
+        fclose(fp);
+    }
+
+    // 3. Store current record in the file (append mode)
+    fp = fopen("nav_history.txt", "a");
+    if (fp == NULL) {
+        printf("Error opening file!\n");
+        return 1;
+    }
+    fprintf(fp, "%.2f %d %d %s\n", dist, x, y, dir);
+    fclose(fp);
+    printf("\nNavigation record saved to file.\n");
+
+    // 4. Alert if repeated obstacle & suggest alternative direction
+    if (repeated) {
+        printf("ALERT: Repeated obstacle detected at (%d, %d)!\n", x, y);
+        if (strcmp(dir, "Forward") == 0)
+            printf("Suggested alternative direction: Turn Left or Right\n");
+        else if (strcmp(dir, "Left") == 0)
+            printf("Suggested alternative direction: Move Forward or Turn Right\n");
+        else if (strcmp(dir, "Right") == 0)
+            printf("Suggested alternative direction: Move Forward or Turn Left\n");
+        else
+            printf("Suggested alternative direction: Move Forward\n");
+    } else {
+        printf("New obstacle logged at (%d, %d). Path updated.\n", x, y);
+    }
+
+    return 0;
+}
