@@ -1,0 +1,33 @@
+#include <stdio.h>
+
+// Function to swap motor speeds using pointers
+void swapSpeeds(int *m1, int *m2) {
+    int temp = *m1;
+    *m1 = *m2;
+    *m2 = temp;
+}
+
+int main() {
+    int motor1, motor2;
+
+    // Input motor speeds
+    printf("Enter speed of Motor 1: ");
+    scanf("%d", &motor1);
+    printf("Enter speed of Motor 2: ");
+    scanf("%d", &motor2);
+
+    // Display values and memory addresses before swapping
+    printf("\n--- Before Swapping ---\n");
+    printf("Motor 1 Speed: %d | Memory Address: %p\n", motor1, (void*)&motor1);
+    printf("Motor 2 Speed: %d | Memory Address: %p\n", motor2, (void*)&motor2);
+
+    // Swap speeds by passing addresses
+    swapSpeeds(&motor1, &motor2);
+
+    // Display values and memory addresses after swapping to verify
+    printf("\n--- After Swapping ---\n");
+    printf("Motor 1 Speed: %d | Memory Address: %p\n", motor1, (void*)&motor1);
+    printf("Motor 2 Speed: %d | Memory Address: %p\n", motor2, (void*)&motor2);
+
+    return 0;
+}
